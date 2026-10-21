@@ -516,3 +516,103 @@ public class Scaling extends JPanel{
 		frame.setVisible(true);
 	}
 }
+
+
+//Assesment 
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Test extends JPanel{
+	
+	//• Base: (-100, 100), (100, 100), (100, 300), (-100, 300), (-100, 100)
+	int[] baseX = { -100, 100, 100, -100, -100};
+	int[] baseY = { 100, 100, 300, 300, 100};
+	
+	//• Roof: (-100, 100), (0, 0), (100, 100), (-100, 100)
+	int[] roofX = {-100, 0, 100, -100};
+	int[] roofY = {100, 0, 100, 100};
+	
+	//• Door: (-30, 300), (30, 300), (30, 220), (-30, 220), (-30, 300)
+	int[] doorX = {-30, 30, 30, -30, -30};
+	int[] doorY = {300, 300, 220, 220, 300};
+	
+	int [][] shapesX = {baseX, roofX, doorX};
+	int [][] shapesY = {baseY, roofY, doorY};
+
+	double scale = 0.6;
+	int[] angles = {0, 90, 180, 270};
+	Color[] colors = {Color.RED, Color.GREEN, Color.ORANGE, Color.MAGENTA};
+	
+	int cx = 300, cy = 300;
+	int d = 60;
+	int e = 180;
+	
+	int[] tX = {cx, cx + d + e, cx, cx - d - e};
+	int[] tY = {cy - d - e, cy, cy + d + e, cy};
+	
+	public void paint(Graphics g) {
+		super.paint(g);
+		
+		
+		for(int h = 0; h < 4; h++ ) {	
+			double angle = Math.toRadians(angles[h]);
+			double cos = Math.cos(angle);
+			double sin = Math.sin(angle);
+			
+			for(int s = 0; s < 3; s++) {
+				int n = shapesX[s].length;
+				int[] nx = new int[n];
+				int[] ny = new int[n];
+				
+				for(int i = 0; i < n; i++) {
+					double xs = shapesX[s][i] * scale;
+					double ys = shapesY[s][i] * scale;
+					
+					double xr = xs * cos - ys * sin;
+					double yr = xs * sin + ys * cos;
+					
+					nx[i] = (int) Math.round(xr +tX[h]);
+					ny[i] = (int) Math.round(yr +tY[h]);
+				}
+				drawShape(g, nx, ny, colors[h]);
+			}
+		}
+		
+	}
+	
+	public void drawShape(Graphics g, int[] px, int[] py, Color c) {
+		g.setColor(c);
+		for(int i = 0; i < px.length - 1; i++) {
+			drawDDA(g, px[i], py[i], px[i + 1] , py[i + 1]);
+		}
+	}
+	
+	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
+		int dx = x2 - x1;
+		int dy = y2 - y1;
+		
+		int steps = Math.max(Math.abs(dx), Math.abs(dy));
+		
+		float x_inc = (float) dx / steps;
+		float y_inc = (float) dy / steps;
+		
+		float x = x1;
+		float y = y1;
+		
+		for(int i = 0; i <= steps; i++){
+			g.fillRect(Math.round(x), Math.round(y), 2, 2);
+			x += x_inc;
+			y += y_inc;
+		}
+	}
+	public static void main(String arg[]) {
+		JFrame frame = new JFrame("Test");
+		Test panel = new Test();
+		frame.add(panel);
+		frame.setSize(620, 650);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+}
+
