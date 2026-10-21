@@ -1,6 +1,5 @@
 1. DDA Line Drawing Algorithm
 
-
 import java.awt.*;
 import javax.swing.*;
 
@@ -461,7 +460,7 @@ public class Scaling extends JPanel{
 		super.paint(g);
 		
 		g.setColor(Color.BLACK);
-//		drawTriangle(g, x, y);
+		drawTriangle(g, x, y);
 		g.drawPolygon(x, y, 3);
 		
 		double sx = 1.5;
@@ -479,33 +478,33 @@ public class Scaling extends JPanel{
 		}
 		
 		g.setColor(Color.RED);
-//		drawTriangle(g, nx, ny);
-		g.drawPolygon(nx, ny, 3);
+		drawTriangle(g, nx, ny);
+//		g.drawPolygon(nx, ny, 3);
 	}
 	
-//	public void drawTriangle(Graphics g, int[] px, int[] py) {
-//		for(int i = 0; i < 3; i++) {
-//			int next = (i + 1) % 3;
-//			drawDDA(g, px[i], py[i], px[next], py[next]);
-//		}
-//	}
-//	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
-//		int dx = x2 - x1;
-//		int dy = y2 - y1;
-//		
-//		int steps = Math.max(Math.abs(dx), Math.abs(dy));
-//		
-//		float x_inc = (float) dx / steps;
-//		float y_inc = (float) dy / steps;
-//		
-//		float x = x1;
-//		float y = y1;
-//		
-//		for(int i = 0; i < steps; i++) {
-//			g.fillRect(Math.round(x), Math.round(y), 2, 2);
-//			x += x_inc;
-//			y += y_inc;
-//		}
+	public void drawTriangle(Graphics g, int[] px, int[] py) {
+		for(int i = 0; i < 3; i++) {
+			int next = (i + 1) % 3;
+			drawDDA(g, px[i], py[i], px[next], py[next]);
+		}
+	}
+	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
+		int dx = x2 - x1;
+		int dy = y2 - y1;
+		
+		int steps = Math.max(Math.abs(dx), Math.abs(dy));
+		
+		float x_inc = (float) dx / steps;
+		float y_inc = (float) dy / steps;
+		
+		float x = x1;
+		float y = y1;
+		
+		for(int i = 0; i < steps; i++) {
+			g.fillRect(Math.round(x), Math.round(y), 2, 2);
+			x += x_inc;
+			y += y_inc;
+		}
 //	}
 	public static void main(String arg[]) {
 		JFrame frame = new JFrame("DDA Line draw");
