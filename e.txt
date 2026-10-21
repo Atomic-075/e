@@ -365,3 +365,155 @@ public class LineClipping extends JPanel {
         frame.setVisible(true);
     }
 }
+
+
+//rotation
+
+import java.awt.*;
+import javax.swing.*;
+
+public class Rotation extends JPanel{
+
+	int[] x = {250, 150, 350};
+	int[] y = {250, 400, 400};
+	
+	
+	public void paint(Graphics g) {
+		super.paint(g);
+		
+		g.setColor(Color.BLACK);
+		drawTriangle(g, x, y);
+		
+		int arrayOfAngles[] = {90,180,270};
+		Color[] colors = {Color.GREEN, Color.RED,Color.BLUE}; 
+		
+		
+		int xp = 250, yp = 250;
+		for(int j=0; j<3; j++) {			
+			double angle = Math.toRadians(arrayOfAngles[j]);
+			
+			double cos = Math.cos(angle);
+			double sin = Math.sin(angle);
+			
+			int[] nx = new int[3];
+			int[] ny = new int[3];
+			
+			for(int i = 0; i < 3; i++) {
+				int dx = x[i] - xp;
+				int dy = y[i] - yp;
+				
+				nx[i] = (int) Math.round(xp + dx * cos - dy * sin);
+				ny[i] = (int) Math.round(yp + dx * sin + dy * cos);
+			}
+			
+			g.setColor(colors[j]);
+			drawTriangle(g, nx, ny);
+		}
+	}
+	
+	public void drawTriangle(Graphics g, int[] px, int[] py) {
+		for(int i = 0; i < 3; i++) {
+			int next = (i + 1) % 3;
+			drawDDA(g, px[i], py[i], px[next], py[next]);
+		}
+	}
+	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
+		int dx = x2 - x1;
+		int dy = y2 - y1;
+		
+		int steps = Math.max(Math.abs(dx), Math.abs(dy));
+		
+		float x_inc = (float) dx / steps;
+		float y_inc = (float) dy / steps;
+		
+		float x = x1;
+		float y = y1;
+		
+		for(int i = 0; i < steps; i++) {
+			g.fillRect(Math.round(x), Math.round(y), 2, 2);
+			x += x_inc;
+			y += y_inc;
+		}
+	}
+	public static void main(String arg[]) {
+		JFrame frame = new JFrame("DDA Line draw");
+		Rotation panel = new Rotation();
+		
+		frame.add(panel);
+		frame.setSize(500, 500);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+}
+
+
+//scaling
+import java.awt.*;
+import javax.swing.*;
+
+public class Scaling extends JPanel{
+
+	int[] x = {250, 150, 350};
+	int[] y = {250, 400, 400};
+	
+	
+	public void paint(Graphics g) {
+		super.paint(g);
+		
+		g.setColor(Color.BLACK);
+//		drawTriangle(g, x, y);
+		g.drawPolygon(x, y, 3);
+		
+		double sx = 1.5;
+		double sy = 1.5;
+		
+		int xf = (x[0] + x[1] + x[2]) / 3;
+		int yf = (y[0] + y[1] + y[2]) / 3;
+				
+		int[] nx = new int[3];
+		int[] ny = new int[3];
+		
+		for(int i = 0; i < 3; i++) {
+			nx[i] = (int) Math.round(xf + (x[i] - xf) * sx);
+			ny[i] = (int) Math.round(yf + (y[i] - yf) * sy);
+		}
+		
+		g.setColor(Color.RED);
+//		drawTriangle(g, nx, ny);
+		g.drawPolygon(nx, ny, 3);
+	}
+	
+//	public void drawTriangle(Graphics g, int[] px, int[] py) {
+//		for(int i = 0; i < 3; i++) {
+//			int next = (i + 1) % 3;
+//			drawDDA(g, px[i], py[i], px[next], py[next]);
+//		}
+//	}
+//	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
+//		int dx = x2 - x1;
+//		int dy = y2 - y1;
+//		
+//		int steps = Math.max(Math.abs(dx), Math.abs(dy));
+//		
+//		float x_inc = (float) dx / steps;
+//		float y_inc = (float) dy / steps;
+//		
+//		float x = x1;
+//		float y = y1;
+//		
+//		for(int i = 0; i < steps; i++) {
+//			g.fillRect(Math.round(x), Math.round(y), 2, 2);
+//			x += x_inc;
+//			y += y_inc;
+//		}
+//	}
+	public static void main(String arg[]) {
+		JFrame frame = new JFrame("DDA Line draw");
+		Scaling panel = new Scaling();
+		
+		frame.add(panel);
+		frame.setSize(500, 500);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+}
