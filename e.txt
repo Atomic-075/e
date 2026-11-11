@@ -1,618 +1,311 @@
-1. DDA Line Drawing Algorithm
+import java.util.Scanner;
+import java.util.Arrays;
 
-import java.awt.*;
-import javax.swing.*;
-
-public class DDALineDrawing extends JPanel {
-
-    public void paint(Graphics g) {
-        super.paint(g);
-        drawDDA(g, 50, 100, 250, 200);
-    }
-
-    public void drawDDA(Graphics g, int x1, int y1,
-                        int x2, int y2) {
-
-        int dx = x2 - x1;
-        int dy = y2 - y1;
-
-        int steps = Math.max(Math.abs(dx), Math.abs(dy));
-
-        float xInc = (float) dx / steps;
-        float yInc = (float) dy / steps;
-
-        float x = x1;
-        float y = y1;
-
-        for (int i = 0; i <= steps; i++) {
-            g.fillRect(Math.round(x), Math.round(y), 2, 2);
-            x += xInc;
-            y += yInc;
-        }
-    }
-
+public class itemPrices{
     public static void main(String[] args) {
-        JFrame frame = new JFrame("DDA Line Drawing");
-        frame.add(new DDALineDrawing());
-        frame.setSize(500, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
-}
+        Scanner sc = new Scanner(System.in);
 
-2. Bresenham Line Drawing Algorithm
+        double[] prices = new double[12];
+        int size = 10;
 
+        // a. Enter 10 prices
+        for (int i = 0; i < size; i++) {
+            System.out.print("Enter price " + (i + 1) + ": ");
+            prices[i] = sc.nextDouble();
+        }
 
-import java.awt.*;
-import javax.swing.*;
+        // b(i). Insert at beginning
+        System.out.print("Enter new price: ");
+        double newPrice = sc.nextDouble();
 
-public class BresenhamLineDrawing extends JPanel {
+        for (int i = size; i > 0; i--) {
+            prices[i] = prices[i - 1];
+        }
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        drawBresenhamLine(g, 50, 100, 250, 200);
-    }
+        prices[0] = newPrice;
+        size++;
 
-    public void drawBresenhamLine(Graphics g, int x1, int y1,
-                                  int x2, int y2) {
+        // b(ii). Insert at specific index
+        System.out.print("Enter price to insert: ");
+        double p = sc.nextDouble();
 
-        int dx = Math.abs(x2 - x1);
-        int dy = Math.abs(y2 - y1);
+        System.out.print("Enter index: ");
+        int index = sc.nextInt();
 
-        int sx = (x1 < x2) ? 1 : -1;
-        int sy = (y1 < y2) ? 1 : -1;
-
-        int err = dx - dy;
-
-        while (true) {
-            g.fillRect(x1, y1, 2, 2);
-
-            if (x1 == x2 && y1 == y2)
-                break;
-
-            int e2 = 2 * err;
-
-            if (e2 > -dy) {
-                err -= dy;
-                x1 += sx;
+        if (index >= 0 && index <= size) {
+            for (int i = size; i > index; i--) {
+                prices[i] = prices[i - 1];
             }
 
-            if (e2 < dx) {
-                err += dx;
-                y1 += sy;
+            prices[index] = p;
+            size++;
+        } else {
+            System.out.println("Invalid index!");
+        }
+
+        // c(i). Display input order
+        System.out.println("Prices:");
+        for (int i = 0; i < size; i++) {
+            System.out.print(prices[i] + " ");
+        }
+
+        // c(ii). Display reverse order
+        System.out.println("\nReverse order:");
+        for (int i = size - 1; i >= 0; i--) {
+            System.out.print(prices[i] + " ");
+        }
+
+        // d. Calculate total
+        double total = 0;
+
+        for (int i = 0; i < size; i++) {
+            total += prices[i];
+        }
+
+        System.out.println("\nTotal = " + total);
+
+        // e. Binary search
+        Arrays.sort(prices, 0, size);
+
+        System.out.print("Enter price to search: ");
+        double search = sc.nextDouble();
+
+        int result = Arrays.binarySearch(prices, 0, size, search);
+
+        if (result >= 0) {
+            System.out.println("Price found at index: " + result);
+        } else {
+            System.out.println("Price not found.");
+        }
+
+        sc.close();
+    }
+}
+
+
+
+
+
+
+class DoublyLinkedListPalindrome {
+    private class Node {
+        int data;
+        Node prev, next;
+
+        Node(int value) {
+            data = value;
+            prev = next = null;
+        }
+    }
+    private Node head, tail;
+
+    public void insert(int value) {
+        Node newNode = new Node(value);
+        if (head == null) { // list empty
+            head = tail = newNode;
+        } else {
+            tail.next = newNode;
+            newNode.prev = tail;
+            tail = newNode;
+        }
+    }
+    public boolean isPalindrome() {
+        if (head == null) return true;
+        Node left = head;
+        Node right = tail;
+
+        while (left != null && right != null && left != right && right.next != left) {
+            if (left.data != right.data) {
+                return false;
             }
+            left = left.next;
+            right = right.prev;
         }
+        return true;
     }
-
+    public void display() {
+        Node current = head;
+        System.out.print("DLL: ");
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Bresenham Line Drawing");
-        frame.add(new BresenhamLineDrawing());
-        frame.setSize(500, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
+        DoublyLinkedList dll = new DoublyLinkedList();
+        dll.insert(1);
+        dll.insert(2);
+        dll.insert(3);
+        dll.insert(2);
+        dll.insert(1);
+        dll.display();
+  if (dll.isPalindrome()) {
+            System.out.println("The Doubly Linked List is a Palindrome.");
+        } else {
+            System.out.println("The Doubly Linked List is NOT a Palindrome.");
+        }
+    }
 }
 
 
-3. Bresenham Circle Drawing Algorithm
 
 
-import java.awt.*;
-import javax.swing.*;
 
-public class BresenhamCircleDrawing extends JPanel {
+public class Stack {
+    int[] stack = new int[10];
+    int top = -1;
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        drawCircle(g, 200, 200, 100);
+    void push(int x) {
+        if (top == 9) System.out.println("Stack is full");
+        else stack[++top] = x;
     }
 
-    public void drawCircle(Graphics g, int xc, int yc, int r) {
-        int x = 0;
-        int y = r;
-        int p = 3 - 2 * r;
-
-        while (x <= y) {
-            plotPoints(g, xc, yc, x, y);
-
-            if (p < 0) {
-                p = p + 4 * x + 6;
-            } else {
-                p = p + 4 * (x - y) + 10;
-                y--;
-            }
-
-            x++;
+    int pop() {
+        if (isEmpty()) {
+            System.out.println("Stack is empty");
+            return -1;
         }
+        return stack[top--];
     }
 
-    public void plotPoints(Graphics g, int xc, int yc,
-                           int x, int y) {
-        g.fillRect(xc + x, yc + y, 2, 2);
-        g.fillRect(xc - x, yc + y, 2, 2);
-        g.fillRect(xc + x, yc - y, 2, 2);
-        g.fillRect(xc - x, yc - y, 2, 2);
+    boolean isFull() { return top == 9; }
+    boolean isEmpty() { return top == -1; }
 
-        g.fillRect(xc + y, yc + x, 2, 2);
-        g.fillRect(xc - y, yc + x, 2, 2);
-        g.fillRect(xc + y, yc - x, 2, 2);
-        g.fillRect(xc - y, yc - x, 2, 2);
+    void printStack() {
+        for (int i = top; i >= 0; i--) System.out.println(stack[i]);
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Bresenham Circle Drawing");
-        frame.add(new BresenhamCircleDrawing());
-        frame.setSize(500, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
-}
-
-
-4. Boundary Fill Algorithm (4-connected)
-
-
-import java.awt.*;
-import javax.swing.*;
-
-public class BoundaryFill extends JPanel {
-
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        g.setColor(Color.BLACK);
-        g.drawRect(100, 100, 200, 200);
-
-        boundaryFill(g, 150, 150,
-                     Color.RED.getRGB(),
-                     Color.BLACK.getRGB());
-    }
-
-    public void boundaryFill(Graphics g, int x, int y,
-                             int fillColor, int boundaryColor) {
-
-        if (x < 0 || y < 0 ||
-            x >= getWidth() || y >= getHeight()) {
-            return;
-        }
-
-        Color current = new Color(
-            g.getColor().getRGB(), true);
-
-        // Read the pixel color from the drawing surface.
-        // This version uses the panel's pixel buffer instead.
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Boundary Fill");
-        frame.add(new BoundaryFill());
-        frame.setSize(500, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
-}
-
-
-//
-
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import javax.swing.*;
-
-public class BoundaryFill extends JPanel {
-
-    BufferedImage image;
-
-    public BoundaryFill() {
-        image = new BufferedImage(
-            500, 500, BufferedImage.TYPE_INT_RGB);
-
-        Graphics g = image.getGraphics();
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, 500, 500);
-
-        g.setColor(Color.BLACK);
-        g.drawRect(100, 100, 200, 200);
-        g.dispose();
-
-        boundaryFill(150, 150,
-                     Color.RED.getRGB(),
-                     Color.BLACK.getRGB());
-    }
-
-    public void boundaryFill(int x, int y,
-                             int fillColor, int boundaryColor) {
-
-        if (x < 0 || y < 0 ||
-            x >= image.getWidth() || y >= image.getHeight())
-            return;
-
-        int currentColor = image.getRGB(x, y);
-
-        if (currentColor != boundaryColor &&
-            currentColor != fillColor) {
-
-            image.setRGB(x, y, fillColor);
-
-            boundaryFill(x + 1, y, fillColor, boundaryColor);
-            boundaryFill(x - 1, y, fillColor, boundaryColor);
-            boundaryFill(x, y + 1, fillColor, boundaryColor);
-            boundaryFill(x, y - 1, fillColor, boundaryColor);
-        }
-    }
-
-    public void paint(Graphics g) {
-        super.paint(g);
-        g.drawImage(image, 0, 0, this);
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Boundary Fill Algorithm");
-        frame.add(new BoundaryFill());
-        frame.setSize(500, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-    }
-}
-
-
-5. Line Clipping Algorithm (Cohen–Sutherland)
-
-
-import java.awt.*;
-import javax.swing.*;
-
-public class LineClipping extends JPanel {
-
-    final int LEFT = 1;
-    final int RIGHT = 2;
-    final int BOTTOM = 4;
-    final int TOP = 8;
-
-    int xmin = 100, ymin = 100;
-    int xmax = 300, ymax = 300;
-
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        // Clipping window
-        g.setColor(Color.BLACK);
-        g.drawRect(xmin, ymin, xmax - xmin, ymax - ymin);
-
-        // Original line
-        g.setColor(Color.LIGHT_GRAY);
-        g.drawLine(50, 150, 350, 250);
-
-        // Clipped line
-        g.setColor(Color.BLUE);
-        clipLine(g, 50, 150, 350, 250);
-    }
-
-    public int getCode(double x, double y) {
-        int code = 0;
-
-        if (x < xmin) code |= LEFT;
-        else if (x > xmax) code |= RIGHT;
-
-        if (y < ymin) code |= TOP;
-        else if (y > ymax) code |= BOTTOM;
-
-        return code;
-    }
-
-    public void clipLine(Graphics g, double x1, double y1,
-                         double x2, double y2) {
-
-        int c1 = getCode(x1, y1);
-        int c2 = getCode(x2, y2);
-        boolean accept = false;
-
-        while (true) {
-            if ((c1 | c2) == 0) {
-                accept = true;
-                break;
-            } else if ((c1 & c2) != 0) {
-                break;
-            } else {
-                int code = (c1 != 0) ? c1 : c2;
-                double x = 0, y = 0;
-
-                if ((code & TOP) != 0) {
-                    x = x1 + (x2 - x1) *
-                        (ymin - y1) / (y2 - y1);
-                    y = ymin;
-                } else if ((code & BOTTOM) != 0) {
-                    x = x1 + (x2 - x1) *
-                        (ymax - y1) / (y2 - y1);
-                    y = ymax;
-                } else if ((code & RIGHT) != 0) {
-                    y = y1 + (y2 - y1) *
-                        (xmax - x1) / (x2 - x1);
-                    x = xmax;
-                } else if ((code & LEFT) != 0) {
-                    y = y1 + (y2 - y1) *
-                        (xmin - x1) / (x2 - x1);
-                    x = xmin;
-                }
-
-                if (code == c1) {
-                    x1 = x;
-                    y1 = y;
-                    c1 = getCode(x1, y1);
-                } else {
-                    x2 = x;
-                    y2 = y;
-                    c2 = getCode(x2, y2);
+    void sortStack() {
+        for (int i = 0; i <= top; i++) {
+            for (int j = 0; j < top - i; j++) {
+                if (stack[j] > stack[j + 1]) {
+                    int temp = stack[j];
+                    stack[j] = stack[j + 1];
+                    stack[j + 1] = temp;
                 }
             }
         }
+    }
 
-        if (accept) {
-            g.drawLine((int) Math.round(x1),
-                       (int) Math.round(y1),
-                       (int) Math.round(x2),
-                       (int) Math.round(y2));
+    void checkPalindrome(int num) {
+        int original = num, reverse = 0;
+        while (num > 0) {
+            int digit = num % 10;
+            reverse = reverse * 10 + digit;
+            num /= 10;
         }
+        if (original == reverse) System.out.println("Palindrome");
+        else System.out.println("Not Palindrome");
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Cohen-Sutherland Clipping");
-        frame.add(new LineClipping());
-        frame.setSize(500, 500);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        Stack s = new Stack();
+        s.push(1); s.push(3); s.push(5); s.push(2);
+        s.push(5); s.push(3); s.push(1);
+        System.out.println("Before sorting:");
+        s.printStack();
+        s.sortStack();
+        System.out.println("After sorting:");
+        s.printStack();
+        s.checkPalindrome(1331);
     }
 }
 
 
-//rotation
 
-import java.awt.*;
-import javax.swing.*;
 
-public class Rotation extends JPanel{
 
-	int[] x = {250, 150, 350};
-	int[] y = {250, 400, 400};
-	
-	
-	public void paint(Graphics g) {
-		super.paint(g);
-		
-		g.setColor(Color.BLACK);
-		drawTriangle(g, x, y);
-		
-		int arrayOfAngles[] = {90,180,270};
-		Color[] colors = {Color.GREEN, Color.RED,Color.BLUE}; 
-		
-		
-		int xp = 250, yp = 250;
-		for(int j=0; j<3; j++) {			
-			double angle = Math.toRadians(arrayOfAngles[j]);
-			
-			double cos = Math.cos(angle);
-			double sin = Math.sin(angle);
-			
-			int[] nx = new int[3];
-			int[] ny = new int[3];
-			
-			for(int i = 0; i < 3; i++) {
-				int dx = x[i] - xp;
-				int dy = y[i] - yp;
-				
-				nx[i] = (int) Math.round(xp + dx * cos - dy * sin);
-				ny[i] = (int) Math.round(yp + dx * sin + dy * cos);
-			}
-			
-			g.setColor(colors[j]);
-			drawTriangle(g, nx, ny);
-		}
-	}
-	
-	public void drawTriangle(Graphics g, int[] px, int[] py) {
-		for(int i = 0; i < 3; i++) {
-			int next = (i + 1) % 3;
-			drawDDA(g, px[i], py[i], px[next], py[next]);
-		}
-	}
-	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
-		int dx = x2 - x1;
-		int dy = y2 - y1;
-		
-		int steps = Math.max(Math.abs(dx), Math.abs(dy));
-		
-		float x_inc = (float) dx / steps;
-		float y_inc = (float) dy / steps;
-		
-		float x = x1;
-		float y = y1;
-		
-		for(int i = 0; i < steps; i++) {
-			g.fillRect(Math.round(x), Math.round(y), 2, 2);
-			x += x_inc;
-			y += y_inc;
-		}
-	}
-	public static void main(String arg[]) {
-		JFrame frame = new JFrame("DDA Line draw");
-		Rotation panel = new Rotation();
-		
-		frame.add(panel);
-		frame.setSize(500, 500);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
+
+public class LinkedList {
+    class Node {
+        String data;
+        Node next;
+        Node(String value) { data = value; }
+    }
+    Node head = null;
+    void insert(String value) {
+        Node newNode = new Node(value);
+        if (head == null) head = newNode;
+        else {
+            Node temp = head;
+            while (temp.next != null) temp = temp.next;
+            temp.next = newNode;
+        }
+    }
+    void insertFirst(String value) {
+        Node newNode = new Node(value);
+        newNode.next = head;
+        head = newNode;
+    }
+    void delete(String value) {
+        if (head == null) {
+            System.out.println("List is empty");
+            return;
+        }
+        if (head.data.equals(value)) {
+            head = head.next;
+            return;
+        }
+        Node temp = head;
+        while (temp.next != null) {
+            if (temp.next.data.equals(value)) {
+                temp.next = temp.next.next;
+                return;
+            }
+            temp = temp.next;
+        }
+        System.out.println("Element not found");
+    }
+    void search(String value) {
+        Node temp = head;
+        while (temp != null) {
+            if (temp.data.equals(value)) {
+                System.out.println("Found");
+                return;
+            }
+            temp = temp.next;
+        }
+        System.out.println("Not Found");
+    }
+    void display() {
+        Node temp = head;
+        while (temp != null) {
+            System.out.print(temp.data + " ");
+            temp = temp.next;
+        }
+        System.out.println();
+    }
+    boolean isPalindrome(String word) {
+        LinkedList reversed = new LinkedList();
+        for (int i = 0; i < word.length(); i++)
+            reversed.insertFirst(word.substring(i, i + 1));
+
+        Node temp = reversed.head;
+        for (int i = 0; i < word.length(); i++) {
+            if (!word.substring(i, i + 1).equals(temp.data)) return false;
+            temp = temp.next;
+        }
+        return true;
+    }
+    public static void main(String[] args) {
+        LinkedList list = new LinkedList();
+        list.insert("1"); list.insert("2"); list.insert("3");
+        list.insert("4"); list.insert("5");
+
+        System.out.println("Linked list:");
+        list.display();
+        list.delete("3");
+        System.out.println("After deletion:");
+        list.display();
+        System.out.print("Search for 5: ");
+        list.search("5");
+
+        if (list.isPalindrome("radar"))
+            System.out.println("radar is a palindrome");
+        else
+            System.out.println("radar is not a palindrome");
+    }
 }
 
-
-//scaling
-import java.awt.*;
-import javax.swing.*;
-
-public class Scaling extends JPanel{
-
-	int[] x = {250, 150, 350};
-	int[] y = {250, 400, 400};
-	
-	
-	public void paint(Graphics g) {
-		super.paint(g);
-		
-		g.setColor(Color.BLACK);
-		drawTriangle(g, x, y);
-		g.drawPolygon(x, y, 3);
-		
-		double sx = 1.5;
-		double sy = 1.5;
-		
-		int xf = (x[0] + x[1] + x[2]) / 3;
-		int yf = (y[0] + y[1] + y[2]) / 3;
-				
-		int[] nx = new int[3];
-		int[] ny = new int[3];
-		
-		for(int i = 0; i < 3; i++) {
-			nx[i] = (int) Math.round(xf + (x[i] - xf) * sx);
-			ny[i] = (int) Math.round(yf + (y[i] - yf) * sy);
-		}
-		
-		g.setColor(Color.RED);
-		drawTriangle(g, nx, ny);
-//		g.drawPolygon(nx, ny, 3);
-	}
-	
-	public void drawTriangle(Graphics g, int[] px, int[] py) {
-		for(int i = 0; i < 3; i++) {
-			int next = (i + 1) % 3;
-			drawDDA(g, px[i], py[i], px[next], py[next]);
-		}
-	}
-	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
-		int dx = x2 - x1;
-		int dy = y2 - y1;
-		
-		int steps = Math.max(Math.abs(dx), Math.abs(dy));
-		
-		float x_inc = (float) dx / steps;
-		float y_inc = (float) dy / steps;
-		
-		float x = x1;
-		float y = y1;
-		
-		for(int i = 0; i < steps; i++) {
-			g.fillRect(Math.round(x), Math.round(y), 2, 2);
-			x += x_inc;
-			y += y_inc;
-		}
-//	}
-	public static void main(String arg[]) {
-		JFrame frame = new JFrame("DDA Line draw");
-		Scaling panel = new Scaling();
-		
-		frame.add(panel);
-		frame.setSize(500, 500);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
-}
-
-
-//Assesment 
-
-import java.awt.*;
-import javax.swing.*;
-
-public class Test extends JPanel{
-	
-	//• Base: (-100, 100), (100, 100), (100, 300), (-100, 300), (-100, 100)
-	int[] baseX = { -100, 100, 100, -100, -100};
-	int[] baseY = { 100, 100, 300, 300, 100};
-	
-	//• Roof: (-100, 100), (0, 0), (100, 100), (-100, 100)
-	int[] roofX = {-100, 0, 100, -100};
-	int[] roofY = {100, 0, 100, 100};
-	
-	//• Door: (-30, 300), (30, 300), (30, 220), (-30, 220), (-30, 300)
-	int[] doorX = {-30, 30, 30, -30, -30};
-	int[] doorY = {300, 300, 220, 220, 300};
-	
-	int [][] shapesX = {baseX, roofX, doorX};
-	int [][] shapesY = {baseY, roofY, doorY};
-
-	double scale = 0.6;
-	int[] angles = {0, 90, 180, 270};
-	Color[] colors = {Color.RED, Color.GREEN, Color.ORANGE, Color.MAGENTA};
-	
-	int cx = 300, cy = 300;
-	int d = 60;
-	int e = 180;
-	
-	int[] tX = {cx, cx + d + e, cx, cx - d - e};
-	int[] tY = {cy - d - e, cy, cy + d + e, cy};
-	
-	public void paint(Graphics g) {
-		super.paint(g);
-		
-		
-		for(int h = 0; h < 4; h++ ) {	
-			double angle = Math.toRadians(angles[h]);
-			double cos = Math.cos(angle);
-			double sin = Math.sin(angle);
-			
-			for(int s = 0; s < 3; s++) {
-				int n = shapesX[s].length;
-				int[] nx = new int[n];
-				int[] ny = new int[n];
-				
-				for(int i = 0; i < n; i++) {
-					double xs = shapesX[s][i] * scale;
-					double ys = shapesY[s][i] * scale;
-					
-					double xr = xs * cos - ys * sin;
-					double yr = xs * sin + ys * cos;
-					
-					nx[i] = (int) Math.round(xr +tX[h]);
-					ny[i] = (int) Math.round(yr +tY[h]);
-				}
-				drawShape(g, nx, ny, colors[h]);
-			}
-		}
-		
-	}
-	
-	public void drawShape(Graphics g, int[] px, int[] py, Color c) {
-		g.setColor(c);
-		for(int i = 0; i < px.length - 1; i++) {
-			drawDDA(g, px[i], py[i], px[i + 1] , py[i + 1]);
-		}
-	}
-	
-	public void drawDDA(Graphics g, int x1, int y1, int x2, int y2) {
-		int dx = x2 - x1;
-		int dy = y2 - y1;
-		
-		int steps = Math.max(Math.abs(dx), Math.abs(dy));
-		
-		float x_inc = (float) dx / steps;
-		float y_inc = (float) dy / steps;
-		
-		float x = x1;
-		float y = y1;
-		
-		for(int i = 0; i <= steps; i++){
-			g.fillRect(Math.round(x), Math.round(y), 2, 2);
-			x += x_inc;
-			y += y_inc;
-		}
-	}
-	public static void main(String arg[]) {
-		JFrame frame = new JFrame("Test");
-		Test panel = new Test();
-		frame.add(panel);
-		frame.setSize(620, 650);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
-}
 
